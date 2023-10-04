@@ -1,6 +1,7 @@
 # mypy: ignore-errors
 from typing import List
-
+import sys
+print(sys.path)
 from sample_code import three_sum
 
 
