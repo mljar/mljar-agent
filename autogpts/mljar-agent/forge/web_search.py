@@ -103,96 +103,106 @@ class WebSearch():
         return "I've searched the internet"
     
     def do_scrapingbee_search(self, query, limit=5):
-        
-        if os.environ.get("SCRAPINGBEE_API_KEY") is None:
-            print()
-            print("IMPORTANT")
-            print()
-            print("Please set SCRAPINGBEE_API_KEY environment variable")
-            print()
-            return []
+        try:
+            if os.environ.get("SCRAPINGBEE_API_KEY") is None:
+                print()
+                print("IMPORTANT")
+                print()
+                print("Please set SCRAPINGBEE_API_KEY environment variable")
+                print()
+                return []
 
-        response = requests.get(
-            url="https://app.scrapingbee.com/api/v1/store/google",
-            params={
-                "api_key": os.environ.get("SCRAPINGBEE_API_KEY"),
-                "search": query,
-                "nb_results": limit
-            },
-        )
-        links = []
-        for r in response.json()["organic_results"]:
-            links += [r["url"]]
-        return links
+            response = requests.get(
+                url="https://app.scrapingbee.com/api/v1/store/google",
+                params={
+                    "api_key": os.environ.get("SCRAPINGBEE_API_KEY"),
+                    "search": query,
+                    "nb_results": limit
+                },
+            )
+            links = []
+            for r in response.json()["organic_results"]:
+                links += [r["url"]]
+            return links
+        except Exception as e:
+            return []
     
     def do_google_search(self, query, limit=5):
-
-        params = {
-            "q": query,
-            "hl": "en",
-            "gl": "usa",
-            "start": 0,
-            "num": limit
-        }
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
-        }
-        html = requests.get("https://www.google.com/search", params=params, headers=headers, timeout=30)
-        
-        links = []
-        if html.status_code == 200:
-            soup = BeautifulSoup(html.text, "html.parser")
-            for el in soup.find_all("span"): 
-                h3 = el.find_all("h3")
-                a = el.find_all("a")
-                if len(h3) == 1 and len(a) == 1:
-                    links += [a[0]["href"]]
-        return links
+        try:
+            params = {
+                "q": query,
+                "hl": "en",
+                "gl": "usa",
+                "start": 0,
+                "num": limit
+            }
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+            }
+            html = requests.get("https://www.google.com/search", params=params, headers=headers, timeout=30)
+            
+            links = []
+            if html.status_code == 200:
+                soup = BeautifulSoup(html.text, "html.parser")
+                for el in soup.find_all("span"): 
+                    h3 = el.find_all("h3")
+                    a = el.find_all("a")
+                    if len(h3) == 1 and len(a) == 1:
+                        links += [a[0]["href"]]
+            return links
+        except Exception as e:
+            return []
 
 
     def do_bing_search(self, query, limit=5):
-        params = {
-            "q": query,
-            "setlang": "en",
-            "cc": "us"
-        }
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
-        }
-        html = requests.get("https://bing.com/search", params=params, timeout=30)
-        
-        h = HTML2Text()
-        h.ignore_links=True
-        h.ignore_images=True
-        #print(h.handle(html.text))
-        
-        soup = BeautifulSoup(html.text, "html.parser")
-        #print(soup)
-        links = []
-        for el in soup.find_all("h2"): 
-            #print(el)
-            a = el.find_all("a")
+        try:
+            params = {
+                "q": query,
+                "setlang": "en",
+                "cc": "us"
+            }
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+            }
+            html = requests.get("https://bing.com/search", params=params, timeout=30)
             
-            if len(a):
-                links += [a[0]["href"]]
-            #print(links)
-        return links[:limit]
+            h = HTML2Text()
+            h.ignore_links=True
+            h.ignore_images=True
+            #print(h.handle(html.text))
+            
+            soup = BeautifulSoup(html.text, "html.parser")
+            #print(soup)
+            links = []
+            for el in soup.find_all("h2"): 
+                #print(el)
+                a = el.find_all("a")
+                
+                if len(a):
+                    links += [a[0]["href"]]
+                #print(links)
+            return links[:limit]
+        except Exception as e:
+            return []
         
     def do_ddg_search(self, query, limit=5):
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
-        }
-        html = requests.post("https://html.duckduckgo.com/html", data={"q": query}, headers=headers)
-        links = []
-        soup = BeautifulSoup(html.text, "html.parser")
-        for el in soup.find_all("h2"): 
-            #print(el)
-            a = el.find_all("a")
-            
-            if len(a):
-                links += [a[0]["href"]]
-            #print(links)
-        return links[:limit]
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+            }
+            html = requests.post("https://html.duckduckgo.com/html", data={"q": query}, headers=headers)
+            links = []
+            soup = BeautifulSoup(html.text, "html.parser")
+            for el in soup.find_all("h2"): 
+                #print(el)
+                a = el.find_all("a")
+                
+                if len(a):
+                    links += [a[0]["href"]]
+                #print(links)
+            return links[:limit]
+        except Exception as e:
+            return []
     
     def run(self):
         prompt_generate_query = generate_search_engine_query(self.task, self.search_goal, self.query)
