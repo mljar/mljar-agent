@@ -10,10 +10,19 @@ The MLJAR Agent code is in the directory `autogpts/mljar-agent`.
 
 The agent start with initial thoughts and requirements about task. It helps to keep details done in later steps.
 
-The next step is loop over set of functions:
+The next step is a loop over set of functions:
 
-- ``
+- `web_search` - it is a mini-agent, it performs exhaustive web search using search engines (Google, Bing, DuckDuckGo), it reads websites and provides answer,
+- `get_website` - it loads a website with `selenium` package and save HTML to file, and converts HTML to text and store in file (with `HTML2Text` package).
+- `save_to_file` - saves string to a file,
+- `execute_python` - executes a Python code,
+- `call_software_engineer` - calls a Software Engineer mini-agent, 
+- `call_data_engineer` - calls a Data Engineer mini-agent,
+- `create_summary` - creates a summary of any text,
+- `check_if_file_exists` - checks if files exists in the current directory,
+- `all_done` - stops agent work and display the final response.
 
+In each iteration we select the next function to perform. The agent is finishing the task after `all_done` called or reaching maximum iterations (currently hard-coded to 6).
 
 ![](./media/mljar-agent-flow.png)
 
@@ -28,7 +37,7 @@ We use additional `search_goal` because we generate several varaitions of `query
 
 > **IMPORTANT** We tried not to use any external API. However, we get blocked by Google Search endpoint - each request got response HTTP 429 (too many requests). That's why we decided to use ScrapingBee service to make requests to Google Search. If your computer get blocked please set `SCRAPINGBEE_API_KEY`. 
 
-![./media/mljar-web-search.png]
+![](./media/mljar-web-search.png)
 
 ### Additional tests
 
