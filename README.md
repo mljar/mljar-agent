@@ -41,6 +41,8 @@ We use additional `search_goal` because we generate several varaitions of `query
 
 ### Additional tests
 
+Some additional tests that we used for local testing of web search.
+
 <details>
   <summary>Which one has larger AUM Renaissance Technologies or Two Sigma?</summary>
   
@@ -57,14 +59,25 @@ We use additional `search_goal` because we generate several varaitions of `query
 </details>
 
 
-
-
-
 ## Data Engineer and Software Engineer Agents
+
+### Software Engineer
+
+It produces list of requirements and write code for a task. 
+
+We were exeprimenting with adding steps with linter and tester as additional steps. However, such solution will require more time for development. We would try to keep coder, linter and tester in a similar functions-loop as main agent.
+
+### Data Engineer
+
+We started competition with this agent. It is very raw. You can compare the architecture of Data Engineer to main agent. 
+
+It creates prompt with all details about input files. The code prompt is executed by `gpt-3.5-turbo` - in all other tasks we were using `gpt-4`. There is simple mechanism for code fixing. In the next version, we would like to apply functions-loop as well to improve this agent.
 
 ![](./media/mljar-software-data-engineer.png)
 
 ## Results
+
+Our local scores are presented below.
 
 ![](./media/results-scraping-track.png)
 
