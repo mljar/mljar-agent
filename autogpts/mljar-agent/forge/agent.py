@@ -186,20 +186,5 @@ class ForgeAgent(Agent):
             #LOG.info(str(critique_response))
             
 
-        
-        # for file_path in os.listdir(os.getcwd()):
-
-        #     if self.files.get(file_path, "") != "" or self.files.get(file_path, 0) != os.path.getmtime(os.path.join(self.wd, file_path)):
-        #         LOG.info(f"🗒️ Create artifact {file_path}")
-
-        #         await self.db.create_artifact(
-        #             task_id=task_id,
-        #             step_id=step.step_id,
-        #             file_name=file_path,
-        #             relative_path="",
-        #             agent_created=True,
-        #         )
-        #         self.files[file_path] = os.path.getmtime(os.path.join(self.wd, file_path))
-
         # Return the completed step
         return step
